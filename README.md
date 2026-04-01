@@ -185,11 +185,4 @@ pip install pillow
 - Thanks for using Pillow and Tkinter libraries
 - Thanks to all contributors and users
 
-## 联系方式 / Contact
 
-If you have any questions or suggestions, please contact us through:
-
-- GitHub Issues: https://github.com/yourusername/hang-to-la/issues
-- Submit Pull Request to improve code
-
-> **Tip**: When submitting an Issue, please provide detailed error information and operation steps so that we can quickly locate and solve the problem!
