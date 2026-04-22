@@ -31,25 +31,21 @@ class HangToLaApp:
         # 存储添加的文本项
         self.text_items = []
         
-        # 创建控制面板，使用Notebook实现标签页
-        self.control_frame = ttk.Notebook(self.root, width=350, height=600)
-        self.control_frame.pack(side=tk.RIGHT, padx=10, pady=10, fill=tk.BOTH)
-        
-        # 创建第一个标签页：基本设置
-        self.basic_tab = ttk.Frame(self.control_frame)
-        self.control_frame.add(self.basic_tab, text="基本设置")
+        # 创建控制面板，使用单个框架
+        self.control_frame = ttk.Frame(self.root, width=350)
+        self.control_frame.pack(side=tk.RIGHT, padx=10, pady=10, fill=tk.Y)
         
         # 内容输入
-        ttk.Label(self.basic_tab, text="输入内容:").pack(anchor=tk.W, pady=(10, 5))
-        self.content_entry = ttk.Entry(self.basic_tab, width=40)
+        ttk.Label(self.control_frame, text="输入内容:").pack(anchor=tk.W, pady=(10, 5))
+        self.content_entry = ttk.Entry(self.control_frame, width=40)
         self.content_entry.pack(pady=5, fill=tk.X)
         
         # 评分方式选择
-        ttk.Label(self.basic_tab, text="评分方式:").pack(anchor=tk.W, pady=(15, 5))
+        ttk.Label(self.control_frame, text="评分方式:").pack(anchor=tk.W, pady=(15, 5))
         self.score_mode = tk.StringVar(value="slider")  # slider或level
         
         # 创建评分方式选择框架
-        score_mode_frame = ttk.Frame(self.basic_tab)
+        score_mode_frame = ttk.Frame(self.control_frame)
         score_mode_frame.pack(pady=5, fill=tk.X)
         
         # 滑动分数选项
@@ -59,7 +55,7 @@ class HangToLaApp:
         ttk.Radiobutton(score_mode_frame, text="五级制度", variable=self.score_mode, value="level", command=self.toggle_score_mode).pack(anchor=tk.W, padx=5)
         
         # 滑动分数控件
-        self.slider_frame = ttk.Frame(self.basic_tab)
+        self.slider_frame = ttk.Frame(self.control_frame)
         ttk.Label(self.slider_frame, text="分数 (0-10):").pack(anchor=tk.W, pady=(10, 5))
         
         # 创建滑块变量，范围0-100对应0-10分
@@ -78,7 +74,7 @@ class HangToLaApp:
         self.score_scale.bind("<ButtonRelease-1>", self.update_score_with_resolution)
         
         # 五级制度控件
-        self.level_frame = ttk.Frame(self.basic_tab)
+        self.level_frame = ttk.Frame(self.control_frame)
         ttk.Label(self.level_frame, text="五级制度:").pack(anchor=tk.W, pady=(10, 5))
         self.level_var = tk.StringVar(value="3")  # 默认NPC
         
@@ -101,21 +97,17 @@ class HangToLaApp:
         self.level_frame.pack(pady=5, fill=tk.X)
         self.level_frame.pack_forget()  # 初始隐藏五级制度框架
         
-        # 创建第二个标签页：字体设置
-        self.font_tab = ttk.Frame(self.control_frame)
-        self.control_frame.add(self.font_tab, text="字体设置")
-        
         # 字体大小
-        ttk.Label(self.font_tab, text="字体大小:").pack(anchor=tk.W, pady=(10, 5))
+        ttk.Label(self.control_frame, text="字体大小:").pack(anchor=tk.W, pady=(15, 5))
         self.font_size_var = tk.IntVar(value=24)
-        self.font_size_spinbox = ttk.Spinbox(self.font_tab, from_=12, to=72, textvariable=self.font_size_var, width=35)
+        self.font_size_spinbox = ttk.Spinbox(self.control_frame, from_=12, to=72, textvariable=self.font_size_var, width=35)
         self.font_size_spinbox.pack(pady=5, fill=tk.X)
         
         # 字体颜色
-        ttk.Label(self.font_tab, text="字体颜色:").pack(anchor=tk.W, pady=(15, 5))
+        ttk.Label(self.control_frame, text="字体颜色:").pack(anchor=tk.W, pady=(15, 5))
         self.font_color_var = tk.StringVar(value="#000000")
         
-        color_frame = ttk.Frame(self.font_tab)
+        color_frame = ttk.Frame(self.control_frame)
         color_frame.pack(pady=5, fill=tk.X)
         
         self.color_button = ttk.Button(color_frame, text="选择颜色", command=self.choose_color)
@@ -125,20 +117,19 @@ class HangToLaApp:
         self.color_preview = tk.Frame(color_frame, width=100, height=25, bg=self.font_color_var.get(), bd=2, relief="solid")
         self.color_preview.pack(side=tk.LEFT, fill=tk.X, expand=True)
         
-        # 创建第三个标签页：操作
-        self.action_tab = ttk.Frame(self.control_frame)
-        self.control_frame.add(self.action_tab, text="操作")
-        
         # 操作按钮，设置统一的宽度
         button_width = 20
         
-        self.add_button = ttk.Button(self.action_tab, text="添加内容", command=self.add_content, width=button_width)
+        self.add_button = ttk.Button(self.control_frame, text="添加内容", command=self.add_content, width=button_width)
         self.add_button.pack(pady=10, fill=tk.X)
         
-        self.clear_button = ttk.Button(self.action_tab, text="清空所有", command=self.clear_all, width=button_width)
+        self.undo_button = ttk.Button(self.control_frame, text="撤退一步", command=self.undo, width=button_width)
+        self.undo_button.pack(pady=10, fill=tk.X)
+        
+        self.clear_button = ttk.Button(self.control_frame, text="清空所有", command=self.clear_all, width=button_width)
         self.clear_button.pack(pady=10, fill=tk.X)
         
-        self.export_button = ttk.Button(self.action_tab, text="导出图片", command=self.export_image, width=button_width)
+        self.export_button = ttk.Button(self.control_frame, text="导出图片", command=self.export_image, width=button_width)
         self.export_button.pack(pady=10, fill=tk.X)
         
         # 已经在前面绑定了分数变化事件，这里不再重复绑定
@@ -210,15 +201,16 @@ class HangToLaApp:
         x, y = self.generate_position(area, content, font_size)
         
         # 在画布上添加文本
-        text_id = self.canvas.create_text(x, y, text=content, fill=font_color, font=("Arial", font_size), anchor=tk.CENTER)
+        text_id = self.canvas.create_text(x, y, text=content, fill=font_color, font=('Arial', font_size), anchor=tk.CENTER)
         
-        # 存储文本信息
+        # 存储文本信息，包含画布ID
         self.texts.append({
             "content": content,
             "score": score,
             "font_size": font_size,
             "font_color": font_color,
-            "position": (x, y)
+            "position": (x, y),
+            "text_id": text_id
         })
         
         # 清空输入框
@@ -327,6 +319,14 @@ class HangToLaApp:
             if item != self.bg_image_id:  # 检查是否是背景图片
                 self.canvas.delete(item)
         self.texts = []
+    
+    def undo(self):
+        """撤退一步，删除最后添加的文本"""
+        if self.texts:
+            # 获取最后添加的文本
+            last_text = self.texts.pop()
+            # 从画布上删除该文本
+            self.canvas.delete(last_text["text_id"])
     
     def export_image(self):
         """导出图片"""
